@@ -3,13 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package main;
+package br.uem.puzzle;
 
 /**
  *
  * @author Massao
  */
-public interface IHeuristica {
-  public double peso();
-  public double valor(AStar aStar);
+public enum Direcao {
+  DIREITA, ESQUERDA, CIMA, BAIXO;
 }
