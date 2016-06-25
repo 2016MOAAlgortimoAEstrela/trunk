@@ -7,6 +7,7 @@ package br.uem.astar;
 
 import br.uem.utils.Constantes;
 import br.uem.puzzle.Puzzle;
+import br.uem.utils.Impressora;
 import java.util.List;
 import java.util.PriorityQueue;
 
@@ -82,17 +83,18 @@ public class AStar {
     PriorityQueue<Puzzle> filaFechados = new PriorityQueue<>();
 
     Puzzle puzzle = new Puzzle(mapa, null);
-
+    String mensagemImpressao = "Mapa inicial";
     filaAbertos.add(puzzle);
     while (filaAbertos.size() != 0) {
-      Puzzle.contadorIteracoes++;
       Puzzle p = filaAbertos.remove();
+      Impressora.ImprimeMapa(p.getMapa(), mensagemImpressao);
       filaFechados.add(p);
 
       if (p.comparaMapa(Constantes.ESTADOFINAL)) {
         return p;
       }
 
+      mensagemImpressao = String.format("%02dº movimento", ++Puzzle.contadorIteracoes);
       List<Puzzle> listaAdjacentes = p.filhos();
       for (Puzzle adjacente : listaAdjacentes) {
         if (!(filaAbertos.contains(adjacente) || filaFechados.contains(adjacente))

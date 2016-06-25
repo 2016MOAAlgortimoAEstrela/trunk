@@ -5,6 +5,8 @@
  */
 package br.uem.puzzle;
 
+import br.uem.heuristicas.HLinhaDois;
+import br.uem.heuristicas.HLinhaTres;
 import br.uem.heuristicas.HLinhaUm;
 import br.uem.interfaces.IHeuristica;
 import br.uem.utils.Constantes;
@@ -40,6 +42,8 @@ public class Puzzle implements Comparable<Puzzle> {
 
   private void carregarHeuristicas() {
     listaHeuristicas.add(new HLinhaUm());
+    listaHeuristicas.add(new HLinhaDois());
+    listaHeuristicas.add(new HLinhaTres());
   }
 
   public Integer[][] getMapa() {
@@ -47,7 +51,7 @@ public class Puzzle implements Comparable<Puzzle> {
     for (int contador = 0; contador < mapa.length; contador++) {
       System.arraycopy(mapa[contador], 0, copia[contador], 0, mapa.length);
     }
-    
+
     return copia;
   }
 
@@ -97,7 +101,7 @@ public class Puzzle implements Comparable<Puzzle> {
 
   private Integer[][] novoMapa(Tuple novaPosicaoAberta) {
     Integer[][] novoMapa = getMapa();
-    novoMapa[posicaoZero.getColuna()][posicaoZero.getColuna()] = novoMapa[novaPosicaoAberta.getLinha()][novaPosicaoAberta.getColuna()];
+    novoMapa[posicaoZero.getLinha()][posicaoZero.getColuna()] = mapa[novaPosicaoAberta.getLinha()][novaPosicaoAberta.getColuna()];
     novoMapa[novaPosicaoAberta.getLinha()][novaPosicaoAberta.getColuna()] = Constantes.CAMPOABERTO;
     return novoMapa;
   }
