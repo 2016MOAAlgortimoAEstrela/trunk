@@ -7,7 +7,8 @@ package br.uem.astar;
 
 import br.uem.utils.Constantes;
 import br.uem.puzzle.Puzzle;
-import br.uem.utils.Impressora;
+import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 
@@ -78,31 +79,34 @@ public class AStar {
     if ((tamanho != 16)) {
       throw new Exception("Argumento inválido, deve possuir 16 números");
     }
-
-    PriorityQueue<Puzzle> filaAbertos = new PriorityQueue<>();
-    PriorityQueue<Puzzle> filaFechados = new PriorityQueue<>();
+    
+    Comparator<Puzzle> comparador = new Puzzle();
+    PriorityQueue<Puzzle> filaAbertos = new PriorityQueue<>(comparador);
+    PriorityQueue<Puzzle> filaFechados = new PriorityQueue<>(comparador);
+    LinkedList<Puzzle> filaAuxiliar = new LinkedList<>();
 
     Puzzle puzzle = new Puzzle(mapa, null);
-    String mensagemImpressao = "Mapa inicial";
     filaAbertos.add(puzzle);
-    while (filaAbertos.size() != 0) {
+    filaAuxiliar.add(puzzle);
+    while (filaAuxiliar.size() != 0) {
       Puzzle p = filaAbertos.remove();
-      Impressora.ImprimeMapa(p.getMapa(), mensagemImpressao);
       filaFechados.add(p);
 
       if (p.comparaMapa(Constantes.ESTADOFINAL)) {
         return p;
       }
-
-      mensagemImpressao = String.format("%02dº movimento", ++Puzzle.contadorIteracoes);
+      
       List<Puzzle> listaAdjacentes = p.filhos();
       for (Puzzle adjacente : listaAdjacentes) {
-        if (!(filaAbertos.contains(adjacente) || filaFechados.contains(adjacente))
-                || (adjacente.getDistanciaOrigem() < adjacente.distanciaOrigemEqual(filaAbertos))) {
-          filaAbertos.add(adjacente);
-          if (filaFechados.contains(adjacente)) {
-            filaFechados.remove(adjacente);
+        if (filaAbertos.contains(adjacente)){
+          if (adjacente.getDistanciaOrigem() < filaAuxiliar.get(filaAuxiliar.indexOf(adjacente)).getDistanciaOrigem()){
+            filaAuxiliar.remove(adjacente);
           }
+        }
+        
+        if (!(filaAuxiliar.contains(adjacente) || filaFechados.contains(adjacente))){
+          filaAbertos.add(adjacente);
+          filaAuxiliar.add(adjacente);
         }
       }
     }

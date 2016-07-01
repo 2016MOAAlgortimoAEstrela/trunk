@@ -11,6 +11,7 @@ import br.uem.heuristicas.HLinhaUm;
 import br.uem.interfaces.IHeuristica;
 import br.uem.utils.Constantes;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.PriorityQueue;
@@ -19,18 +20,22 @@ import java.util.PriorityQueue;
  *
  * @author Massao
  */
-public class Puzzle implements Comparable<Puzzle> {
+public class Puzzle implements Comparator<Puzzle> {
 
   private static long contadorInstancia = 0;
   public static long contadorIteracoes = 0;
   private long id;
   private Puzzle predecessor;
   private Integer[][] mapa = new Integer[4][4];
-  private double totalHeuristicas = 0;
+  private double totalHeuristicas = -1;
   private double distanciaOrigem = 0;
   private Tuple posicaoZero;
 
   List<IHeuristica> listaHeuristicas = new ArrayList<>();
+  
+  public Puzzle(){
+    
+  }
 
   public Puzzle(Integer[][] mapa, Puzzle predecessor) {
     this.setMapa(mapa);
@@ -62,26 +67,27 @@ public class Puzzle implements Comparable<Puzzle> {
   }
 
   public double calculoHeuristicas() {
-    if (totalHeuristicas > 0) {
+    if (!(totalHeuristicas < 0)) {
       return totalHeuristicas;
     }
 
     double peso = 0;
-    for (IHeuristica heuristica : listaHeuristicas) {
-      totalHeuristicas += heuristica.executaCalculo(this);
-      peso++;
-    }
-
-    if (peso > 0) {
-      totalHeuristicas /= peso;
-    }
+//    for (IHeuristica heuristica : listaHeuristicas) {
+//      totalHeuristicas += heuristica.executaCalculo(this);
+//      peso++;
+//    }
+    
+    totalHeuristicas = new HLinhaTres().executaCalculo(this);
+//    if (peso > 0) {
+//      totalHeuristicas /= peso;
+//    }
 
     totalHeuristicas += distanciaOrigem;
     return totalHeuristicas;
   }
 
   public double getCalculoHeuristicas() {
-    return totalHeuristicas - distanciaOrigem;
+    return totalHeuristicas;
   }
 
   public double getDistanciaOrigem() {
@@ -89,7 +95,7 @@ public class Puzzle implements Comparable<Puzzle> {
   }
 
   private Tuple posicaoCampoZero() {
-    return posicaoValor(Constantes.CAMPOABERTO);
+    return posicaoValor(this.mapa, Constantes.CAMPOABERTO);
   }
 
   private void setPredecessor(Puzzle predecessor) {
@@ -106,14 +112,6 @@ public class Puzzle implements Comparable<Puzzle> {
     return novoMapa;
   }
 
-  private Integer[][] criarMapaNovaLinha(Integer novaLinha) {
-    return novoMapa(new Tuple(novaLinha, posicaoZero.getColuna()));
-  }
-
-  private Integer[][] criarMapaNovaColuna(Integer novaColuna) {
-    return novoMapa(new Tuple(posicaoZero.getLinha(), novaColuna));
-  }
-
   private Puzzle movimento(Direcao direcao) {
     Integer[][] novoMapa = null;
     int colunaAtual = posicaoZero.getColuna();
@@ -121,28 +119,28 @@ public class Puzzle implements Comparable<Puzzle> {
     switch (direcao) {
       case DIREITA: {
         if (colunaAtual < 3) {
-          novoMapa = criarMapaNovaColuna(colunaAtual + 1);
+          novoMapa = novoMapa(new Tuple(linhaAtual, colunaAtual + 1));
         }
 
         break;
       }
       case ESQUERDA: {
         if (colunaAtual > 0) {
-          novoMapa = criarMapaNovaColuna(colunaAtual - 1);
+          novoMapa = novoMapa(new Tuple(linhaAtual, colunaAtual - 1));
         }
 
         break;
       }
       case CIMA: {
         if (linhaAtual > 0) {
-          novoMapa = criarMapaNovaLinha(linhaAtual - 1);
+          novoMapa = novoMapa(new Tuple(linhaAtual - 1, colunaAtual));
         }
 
         break;
       }
       case BAIXO: {
         if (linhaAtual < 3) {
-          novoMapa = criarMapaNovaLinha(linhaAtual + 1);
+          novoMapa = novoMapa(new Tuple(linhaAtual + 1, colunaAtual));
         }
 
         break;
@@ -152,11 +150,8 @@ public class Puzzle implements Comparable<Puzzle> {
         return null;
       }
     }
-    if (novoMapa != null) {
-      return new Puzzle(novoMapa, this);
-    }
-
-    return null;
+    
+    return (novoMapa != null) ? new Puzzle(novoMapa, this) : null;
   }
 
   public List<Puzzle> filhos() {
@@ -171,10 +166,10 @@ public class Puzzle implements Comparable<Puzzle> {
     return filhos;
   }
 
-  public Tuple posicaoValor(Integer valor) {
+  public Tuple posicaoValor(Integer[][] mapa, Integer valor) {
     for (int linha = 0; linha < mapa.length; linha++) {
       for (int coluna = 0; coluna < mapa[linha].length; coluna++) {
-        if (this.mapa[linha][coluna] == valor) {
+        if (mapa[linha][coluna] == valor) {
           return new Tuple(linha, coluna);
         }
       }
@@ -226,14 +221,14 @@ public class Puzzle implements Comparable<Puzzle> {
   }
 
   @Override
-  public int compareTo(Puzzle puzzle) {
-    double diferenca = this.calculoHeuristicas();
-    diferenca -= puzzle.calculoHeuristicas();
+  public int compare(Puzzle p1, Puzzle p2) {
+    double diferenca = p1.calculoHeuristicas();
+    diferenca -= p2.calculoHeuristicas();
 
     if (diferenca == 0) {
       return 0;
     }
 
-    return (int) (diferenca / Math.abs(diferenca));
+    return (int) (diferenca / Math.abs(diferenca));    
   }
 }

@@ -17,11 +17,13 @@ public class Main {
 
   public static void main(String[] args) {
     try {
-      Integer[][] mapa = Constantes.MAPA_ONZE_MOVIMENTOS;
+      Integer[][] mapa = Constantes.MAPA_VINTESEIS_MOVIMENTOS;
 
       AStar aStar = new AStar();
+      double tempo = System.currentTimeMillis();
       Puzzle puzzle = aStar.executa(mapa);
-      System.out.printf("%d movimentos!\n", puzzle.contadorIteracoes);
+      System.out.printf("Tempo: %f\n", ((System.currentTimeMillis() - tempo) / 1000.0));
+      System.out.printf("%d movimentos!\n", (int)puzzle.getDistanciaOrigem());
     } catch (Exception e) {
       System.out.println(e.getMessage());
     }

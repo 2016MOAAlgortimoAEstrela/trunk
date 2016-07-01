@@ -10,8 +10,8 @@ package br.uem.puzzle;
  * @author Massao
  */
 public class Tuple {
-  private int linha;
-  private int coluna;
+  private final int linha;
+  private final int coluna;
 
   public Tuple(int linha, int coluna) {
       this.linha = linha;
