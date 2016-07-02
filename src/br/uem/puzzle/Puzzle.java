@@ -5,16 +5,21 @@
  */
 package br.uem.puzzle;
 
+import br.uem.heuristicas.HLinhaCinco;
 import br.uem.heuristicas.HLinhaDois;
+import br.uem.heuristicas.HLinhaQuatro;
 import br.uem.heuristicas.HLinhaTres;
 import br.uem.heuristicas.HLinhaUm;
 import br.uem.interfaces.IHeuristica;
 import br.uem.utils.Constantes;
+import br.uem.utils.Conversor;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.PriorityQueue;
+import jdk.internal.dynalink.linker.ConversionComparator;
 
 /**
  *
@@ -22,33 +27,25 @@ import java.util.PriorityQueue;
  */
 public class Puzzle implements Comparator<Puzzle> {
 
-  private static long contadorInstancia = 0;
-  public static long contadorIteracoes = 0;
-  private long id;
   private Puzzle predecessor;
   private Integer[][] mapa = new Integer[4][4];
   private double totalHeuristicas = -1;
   private double distanciaOrigem = 0;
   private Tuple posicaoZero;
-
-  List<IHeuristica> listaHeuristicas = new ArrayList<>();
+  private IHeuristica heuristica;
+  private HashMap<Integer, Tuple> mapaAtual = new HashMap<Integer, Tuple>();
+  private HashMap<Integer, Tuple> mapaFinal = new HashMap<Integer, Tuple>();
   
   public Puzzle(){
     
   }
 
-  public Puzzle(Integer[][] mapa, Puzzle predecessor) {
+  public Puzzle(Integer[][] mapa, Puzzle predecessor, IHeuristica heuristica) {
     this.setMapa(mapa);
     this.setPredecessor(predecessor);
     this.posicaoZero = posicaoCampoZero();
-    carregarHeuristicas();
-    id = ++contadorInstancia;
-  }
-
-  private void carregarHeuristicas() {
-    listaHeuristicas.add(new HLinhaUm());
-    listaHeuristicas.add(new HLinhaDois());
-    listaHeuristicas.add(new HLinhaTres());
+    this.heuristica = heuristica;
+    Conversor.ConverterParaHashMap(this, mapaAtual, mapaFinal);
   }
 
   public Integer[][] getMapa() {
@@ -71,17 +68,8 @@ public class Puzzle implements Comparator<Puzzle> {
       return totalHeuristicas;
     }
 
-    double peso = 0;
-//    for (IHeuristica heuristica : listaHeuristicas) {
-//      totalHeuristicas += heuristica.executaCalculo(this);
-//      peso++;
-//    }
-    
-    totalHeuristicas = new HLinhaTres().executaCalculo(this);
-//    if (peso > 0) {
-//      totalHeuristicas /= peso;
-//    }
-
+    totalHeuristicas = 0;
+    totalHeuristicas += heuristica.executaCalculo(this);    
     totalHeuristicas += distanciaOrigem;
     return totalHeuristicas;
   }
@@ -151,7 +139,7 @@ public class Puzzle implements Comparator<Puzzle> {
       }
     }
     
-    return (novoMapa != null) ? new Puzzle(novoMapa, this) : null;
+    return (novoMapa != null) ? new Puzzle(novoMapa, this, this.heuristica) : null;
   }
 
   public List<Puzzle> filhos() {
