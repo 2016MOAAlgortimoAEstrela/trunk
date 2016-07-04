@@ -5,6 +5,7 @@
  */
 package br.uem.astar;
 
+import br.uem.interfaces.IHeuristica;
 import br.uem.utils.Constantes;
 import br.uem.puzzle.Puzzle;
 import java.util.Comparator;
@@ -17,58 +18,31 @@ import java.util.PriorityQueue;
  * @author Massao
  */
 public class AStar {
-
-  /**
-   * Função que executa o algoritmo A*
-   *
-   * @param mapa, array de string, que deve possuir 16 strings
-   * @return Puzzle
-   */
-  public Puzzle executa(String[] mapa) throws Exception {
-    if (mapa.length != 16) {
-      throw new Exception("Argumento inválido, deve possuir 16 números");
-    }
-
-    Integer[][] intMapa = new Integer[4][4];
+  
+  public Puzzle executa(String mapa, IHeuristica heuristica) throws Exception {    
+    return executa(mapa, " ", heuristica);
+  }
+  
+  public Puzzle executa(String mapa, String separador, IHeuristica heuristica) throws Exception {
+    String[] vetorMapa = mapa.split(separador);
+    Integer[][] matrizMapa = new Integer[4][4];
     int linha = 0;
     int coluna = 0;
-    for (String str : mapa) {
-      if (coluna == 3) {
-        linha++;
+    for (int contador = 0; contador < vetorMapa.length; contador++){
+      if (coluna == 4){
         coluna = 0;
+        linha++;
       }
-
-      intMapa[linha][coluna] = Integer.parseInt(str);
+      
+      matrizMapa[linha][coluna] = Integer.parseInt(vetorMapa[contador]);
+      
       coluna++;
     }
-
-    return executa(intMapa);
+    
+    return executa(matrizMapa, heuristica);
   }
-
-  /**
-   * Função que executa o algoritmo A*
-   *
-   * @param mapa, string, que deve possuir 16 números, estes separados por uma
-   * string única.
-   * @param separador, string utilizada para separar os números
-   * @return Puzzle
-   */
-  public Puzzle executa(String mapa, String separador) throws Exception {
-    if (mapa.length() != 16) {
-      throw new Exception("Argumento inválido, deve possuir 16 números");
-    }
-
-    String[] strMapa = mapa.split(separador);
-    return executa(strMapa);
-  }
-
-  /**
-   * Função que executa o algoritmo A*
-   *
-   * @param mapa, matriz int
-   * @return Puzzle
-   */
-  public Puzzle executa(Integer[][] mapa) throws Exception {
+  
+  public Puzzle executa(Integer[][] mapa, IHeuristica heuristica) throws Exception {
     int tamanho = 0;
     for (Integer[] linha : mapa) {
       for (Integer coluna : linha) {
@@ -81,11 +55,11 @@ public class AStar {
     }
     
     Comparator<Puzzle> comparador = new Puzzle();
-    PriorityQueue<Puzzle> filaAbertos = new PriorityQueue<>(comparador);
-    PriorityQueue<Puzzle> filaFechados = new PriorityQueue<>(comparador);
-    LinkedList<Puzzle> filaAuxiliar = new LinkedList<>();
+    PriorityQueue<Puzzle> filaAbertos = new PriorityQueue<Puzzle>(comparador);
+    PriorityQueue<Puzzle> filaFechados = new PriorityQueue<Puzzle>(comparador);
+    LinkedList<Puzzle> filaAuxiliar = new LinkedList<Puzzle>();
 
-    Puzzle puzzle = new Puzzle(mapa, null);
+    Puzzle puzzle = new Puzzle(mapa, null, heuristica);
     filaAbertos.add(puzzle);
     filaAuxiliar.add(puzzle);
     while (filaAuxiliar.size() != 0) {

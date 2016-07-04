@@ -5,11 +5,6 @@
  */
 package br.uem.puzzle;
 
-import br.uem.heuristicas.HLinhaCinco;
-import br.uem.heuristicas.HLinhaDois;
-import br.uem.heuristicas.HLinhaQuatro;
-import br.uem.heuristicas.HLinhaTres;
-import br.uem.heuristicas.HLinhaUm;
 import br.uem.interfaces.IHeuristica;
 import br.uem.utils.Constantes;
 import br.uem.utils.Conversor;
@@ -19,7 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.PriorityQueue;
-import jdk.internal.dynalink.linker.ConversionComparator;
 
 /**
  *
@@ -28,13 +22,13 @@ import jdk.internal.dynalink.linker.ConversionComparator;
 public class Puzzle implements Comparator<Puzzle> {
 
   private Puzzle predecessor;
-  private Integer[][] mapa = new Integer[4][4];
+  public Integer[][] mapa = new Integer[4][4];
   private double totalHeuristicas = -1;
   private double distanciaOrigem = 0;
   private Tuple posicaoZero;
   private IHeuristica heuristica;
-  private HashMap<Integer, Tuple> mapaAtual = new HashMap<Integer, Tuple>();
-  private HashMap<Integer, Tuple> mapaFinal = new HashMap<Integer, Tuple>();
+  public HashMap<Integer, Tuple> mapaAtual = new HashMap<Integer, Tuple>();
+  public HashMap<Integer, Tuple> mapaFinal = new HashMap<Integer, Tuple>();
   
   public Puzzle(){
     
@@ -88,8 +82,8 @@ public class Puzzle implements Comparator<Puzzle> {
 
   private void setPredecessor(Puzzle predecessor) {
     this.predecessor = predecessor;
-    if (predecessor != null) {
-      this.distanciaOrigem = predecessor.distanciaOrigem + 1;
+    if (this.predecessor != null) {
+      this.distanciaOrigem = this.predecessor.distanciaOrigem + 1;
     }
   }
 
@@ -143,7 +137,7 @@ public class Puzzle implements Comparator<Puzzle> {
   }
 
   public List<Puzzle> filhos() {
-    List<Puzzle> filhos = new ArrayList<>();
+    List<Puzzle> filhos = new ArrayList<Puzzle>();
     for (Direcao direcao : Direcao.values()) {
       Puzzle puzzle = movimento(direcao);
       if (puzzle != null) {

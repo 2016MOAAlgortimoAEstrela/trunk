@@ -5,7 +5,10 @@
  */
 package br.uem.utils;
 
+import br.uem.puzzle.Puzzle;
+import br.uem.puzzle.Tuple;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -59,7 +62,7 @@ public class Conversor {
   }
 
   public static List<Integer> ConverteArrayParaLista(Integer[] array) {
-    List<Integer> lista = new ArrayList<>();
+    List<Integer> lista = new ArrayList<Integer>();
     for (int indice = 0; indice < array.length; indice++) {
       lista.add(array[indice]);
     }
@@ -73,5 +76,16 @@ public class Conversor {
     }
 
     return ConverteArrayParaLista(ConverteMatrizParaArray(matriz));
+  }
+  
+  public static void ConverterParaHashMap(Puzzle puzzle, HashMap<Integer, Tuple> mapaAtual, HashMap<Integer, Tuple> mapaFinal){
+    mapaAtual.clear();
+    mapaFinal.clear();
+    for (int linha = 0; linha < puzzle.mapa.length; linha++) {
+      for (int coluna = 0; coluna < puzzle.mapa[linha].length; coluna++) {
+          mapaAtual.put(puzzle.mapa[linha][coluna], new Tuple(linha, coluna));
+          mapaFinal.put(Constantes.ESTADOFINAL[linha][coluna], new Tuple(linha, coluna));
+      }
+    }
   }
 }
