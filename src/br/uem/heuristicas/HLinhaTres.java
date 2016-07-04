@@ -7,6 +7,7 @@ package br.uem.heuristicas;
 
 import br.uem.interfaces.IHeuristica;
 import br.uem.puzzle.Puzzle;
+import br.uem.puzzle.Tuple;
 
 /**
  *
@@ -15,8 +16,18 @@ import br.uem.puzzle.Puzzle;
 public class HLinhaTres implements IHeuristica{
 
   @Override
-  public double executaCalculo(Puzzle puzzle) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  public double executaCalculo(Puzzle puzzle) {    
+    int somador = 0;
+    Tuple posicaoAtual;
+    Tuple posicaoFinal;
+    
+    for (int valor = 0; valor < puzzle.mapaAtual.size(); valor++){
+       posicaoAtual = puzzle.mapaAtual.get(valor);
+       posicaoFinal = puzzle.mapaFinal.get(valor);
+       somador += (Math.abs(posicaoFinal.getLinha() - posicaoAtual.getLinha())) + (Math.abs(posicaoFinal.getColuna()- posicaoAtual.getColuna()));
+    }
+    
+    return somador;
   }
   
 }

@@ -16,7 +16,7 @@ public class HLinhaCinco implements IHeuristica{
 
   @Override
   public double executaCalculo(Puzzle puzzle) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    return Double.max(Double.max(new HLinhaUm().executaCalculo(puzzle), new HLinhaDois().executaCalculo(puzzle)), new HLinhaTres().executaCalculo(puzzle));
   }
   
 }

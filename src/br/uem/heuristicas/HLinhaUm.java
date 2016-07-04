@@ -13,18 +13,22 @@ import br.uem.puzzle.Puzzle;
  *
  * @author Massao
  */
-public class HLinhaUm implements IHeuristica {  
+public class HLinhaUm implements IHeuristica {
+
   @Override
   public double executaCalculo(Puzzle puzzle) {
     double resultado = 0;
     Integer[][] estadoFinal = Constantes.ESTADOFINAL;
     Integer[][] mapaAtual = puzzle.getMapa();
-    
-    for (Integer linha = 0; linha < estadoFinal.length; linha++)
-      for (Integer coluna = 0; coluna < estadoFinal[linha].length; coluna++) 
-        if (estadoFinal[linha][coluna] != mapaAtual[linha][coluna])
+
+    for (Integer linha = 0; linha < estadoFinal.length; linha++) {
+      for (Integer coluna = 0; coluna < estadoFinal[linha].length; coluna++) {
+        if (estadoFinal[linha][coluna] != mapaAtual[linha][coluna]) {
           resultado++;
-    
+        }
+      }
+    }
+
     return resultado;
   }
 }
