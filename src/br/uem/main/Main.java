@@ -8,32 +8,22 @@ import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Main {
-
+class Main {
   public static void main(String[] args) {
-    try {
-      //Integer[][] mapa = Constantes.MAPA_SEIS_MOVIMENTOS;
-      String mapa = Constantes.MAPA_TESTE_06;
-      //Scanner scanner = new Scanner(System.in);
-      //String mapa = scanner.next();
+    Scanner scanner = new Scanner(System.in);
+    String mapa = scanner.next();
 
-      double tempo = System.currentTimeMillis();
-      Puzzle puzzle = new AStar().executa(mapa, new HLinhaQuatro());
-      System.out.printf("Tempo: %f\n", ((System.currentTimeMillis() - tempo) / 1000.0));
-      System.out.printf("%d movimentos!\n", (int)puzzle.getDistanciaOrigem());
-    } catch (Exception e) {
-      System.out.println(e.getMessage());
-    }
+    Puzzle puzzle = new AStar().executa(mapa, new HLinhaQuatro());
+    System.out.printf("%d", (int)puzzle.getDistanciaOrigem());
   }
 }
 
-class AStar {
-  
-  public Puzzle executa(String mapa, IHeuristica heuristica) throws Exception {    
+class AStar {  
+  public Puzzle executa(String mapa, IHeuristica heuristica) {    
     return executa(mapa, " ", heuristica);
   }
   
-  public Puzzle executa(String mapa, String separador, IHeuristica heuristica) throws Exception {
+  public Puzzle executa(String mapa, String separador, IHeuristica heuristica) {
     String[] vetorMapa = mapa.split(separador);
     Integer[][] matrizMapa = new Integer[4][4];
     int linha = 0;
@@ -44,26 +34,14 @@ class AStar {
         linha++;
       }
       
-      matrizMapa[linha][coluna] = Integer.parseInt(vetorMapa[contador]);
-      
+      matrizMapa[linha][coluna] = Integer.parseInt(vetorMapa[contador]);      
       coluna++;
     }
     
     return executa(matrizMapa, heuristica);
   }
   
-  public Puzzle executa(Integer[][] mapa, IHeuristica heuristica) throws Exception {
-    int tamanho = 0;
-    for (Integer[] linha : mapa) {
-      for (Integer coluna : linha) {
-        tamanho++;
-      }
-    }
-
-    if ((tamanho != 16)) {
-      throw new Exception("Argumento inválido, deve possuir 16 números");
-    }
-    
+  public Puzzle executa(Integer[][] mapa, IHeuristica heuristica) {    
     Comparator<Puzzle> comparador = new Puzzle();
     PriorityQueue<Puzzle> filaAbertos = new PriorityQueue<Puzzle>(comparador);
     PriorityQueue<Puzzle> filaFechados = new PriorityQueue<Puzzle>(comparador);
@@ -100,7 +78,6 @@ class AStar {
 }
 
 class Constantes {
-
   public static final Integer CAMPOABERTO = 0;
   public static final Integer[][] ESTADOFINAL = new Integer[][]{
     {1, 12, 11, 10},
@@ -215,7 +192,6 @@ class Tuple {
 }
 
 class HLinhaUm implements IHeuristica {
-
   @Override
   public double executaCalculo(Puzzle puzzle) {
     double resultado = 0;
@@ -235,7 +211,6 @@ class HLinhaUm implements IHeuristica {
 }
 
 class HLinhaDois implements IHeuristica {
-
   @Override
   public double executaCalculo(Puzzle puzzle) {
     int resultado = 0;
@@ -265,7 +240,6 @@ class HLinhaDois implements IHeuristica {
 }
 
 class HLinhaTres implements IHeuristica{
-
   @Override
   public double executaCalculo(Puzzle puzzle) {    
     int somador = 0;
@@ -279,33 +253,27 @@ class HLinhaTres implements IHeuristica{
     }
     
     return somador;
-  }
-  
+  }  
 }
 
-class HLinhaQuatro implements IHeuristica{
-  
+class HLinhaQuatro implements IHeuristica{  
   @Override
   public double executaCalculo(Puzzle puzzle) {
     double pesoH1 = 0.05;
     double pesoH2 = 0.05;
     double pesoH3 = 0.99;
     return ((pesoH1 * new HLinhaUm().executaCalculo(puzzle)) + (pesoH2 * new HLinhaDois().executaCalculo(puzzle)) + (pesoH3 * new HLinhaTres().executaCalculo(puzzle)));
-  }
-  
+  }  
 }
 
 class HLinhaCinco implements IHeuristica{
-
   @Override
   public double executaCalculo(Puzzle puzzle) {
     return Double.max(Double.max(new HLinhaUm().executaCalculo(puzzle), new HLinhaDois().executaCalculo(puzzle)), new HLinhaTres().executaCalculo(puzzle));
-  }
-  
+  }  
 }
 
 class Puzzle implements Comparator<Puzzle> {
-
   private Puzzle predecessor;
   public Integer[][] mapa = new Integer[4][4];
   private double totalHeuristicas = -1;
@@ -315,9 +283,7 @@ class Puzzle implements Comparator<Puzzle> {
   public HashMap<Integer, Tuple> mapaAtual = new HashMap<Integer, Tuple>();
   public HashMap<Integer, Tuple> mapaFinal = new HashMap<Integer, Tuple>();
   
-  public Puzzle(){
-    
-  }
+  public Puzzle(){}
 
   public Puzzle(Integer[][] mapa, Puzzle predecessor, IHeuristica heuristica) {
     this.setMapa(mapa);
@@ -501,7 +467,6 @@ class Puzzle implements Comparator<Puzzle> {
 }
 
 class Conversor {
-
   public static Integer[] ConverteMatrizEspiralParaArray(Integer[][] mapaAtual) {
     Integer[] mapaEmLinha = new Integer[mapaAtual.length * mapaAtual[0].length];
     int contador = 0;
