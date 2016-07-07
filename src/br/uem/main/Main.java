@@ -88,8 +88,7 @@ class AStar {
         linha++;
       }
       
-      matrizMapa[linha][coluna] = Integer.parseInt(vetorMapa[contador]);
-      
+      matrizMapa[linha][coluna] = Integer.parseInt(vetorMapa[contador]);      
       coluna++;
     }
     
@@ -133,7 +132,6 @@ class AStar {
 }
 
 class Constantes {
-
   public static final Integer CAMPOABERTO = 0;
   public static final Integer[][] ESTADOFINAL = new Integer[][]{
     {1, 12, 11, 10},
@@ -249,7 +247,6 @@ class Tuple {
 }
 
 class HLinhaUm implements IHeuristica {
-
   @Override
   public String nome(){ return "Heurística 1";};
   @Override
@@ -271,7 +268,6 @@ class HLinhaUm implements IHeuristica {
 }
 
 class HLinhaDois implements IHeuristica {
-
   @Override
   public String nome(){ return "Heurística 2";};
   
@@ -304,7 +300,6 @@ class HLinhaDois implements IHeuristica {
 }
 
 class HLinhaTres implements IHeuristica{
-
   @Override
   public String nome(){ return "Heurística 3";};
   
@@ -321,12 +316,10 @@ class HLinhaTres implements IHeuristica{
     }
     
     return somador;
-  }
-  
+  }  
 }
 
-class HLinhaQuatro implements IHeuristica{
-  
+class HLinhaQuatro implements IHeuristica{  
   @Override
   public String nome(){ return "Heurística 4";};
   
@@ -336,24 +329,20 @@ class HLinhaQuatro implements IHeuristica{
     double pesoH2 = 0.05;
     double pesoH3 = 0.99;
     return ((pesoH1 * new HLinhaUm().executaCalculo(puzzle)) + (pesoH2 * new HLinhaDois().executaCalculo(puzzle)) + (pesoH3 * new HLinhaTres().executaCalculo(puzzle)));
-  }
-  
+  }  
 }
 
 class HLinhaCinco implements IHeuristica{
-
   @Override
   public String nome(){ return "Heurística 5";};
   
   @Override
   public double executaCalculo(Puzzle puzzle) {
     return Double.max(Double.max(new HLinhaUm().executaCalculo(puzzle), new HLinhaDois().executaCalculo(puzzle)), new HLinhaTres().executaCalculo(puzzle));
-  }
-  
+  }  
 }
 
 class Puzzle implements Comparator<Puzzle> {
-
   private Puzzle predecessor;
   public Integer[][] mapa = new Integer[4][4];
   private double totalHeuristicas = -1;
@@ -363,9 +352,7 @@ class Puzzle implements Comparator<Puzzle> {
   public HashMap<Integer, Tuple> mapaAtual = new HashMap<Integer, Tuple>();
   public HashMap<Integer, Tuple> mapaFinal = new HashMap<Integer, Tuple>();
   
-  public Puzzle(){
-    
-  }
+  public Puzzle(){}
 
   public Puzzle(Integer[][] mapa, Puzzle predecessor, IHeuristica heuristica) {
     this.setMapa(mapa);
@@ -549,7 +536,6 @@ class Puzzle implements Comparator<Puzzle> {
 }
 
 class Conversor {
-
   public static Integer[] ConverteMatrizEspiralParaArray(Integer[][] mapaAtual) {
     Integer[] mapaEmLinha = new Integer[mapaAtual.length * mapaAtual[0].length];
     int contador = 0;
