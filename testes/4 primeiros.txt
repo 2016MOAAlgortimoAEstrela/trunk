@@ -1,0 +1,84 @@
+﻿12 2 11 10 1 13 9 8 3 5 14 15 4 0 6 7
+
+Heurística 1
+Tempo     : 0,039000
+
+Heurística 2
+Tempo     : 0,015000
+
+Heurística 3
+Tempo     : 0,015000
+
+Heurística 4
+Tempo     : 0,007000
+
+Heurística 5
+Tempo     : 0,007000
+
+Movimentos: 11
+
+-------------------------------
+
+2 1 9 11 12 13 10 0 3 14 15 8 4 5 6 7
+
+Heurística 1
+Tempo     : 0,007000
+
+Heurística 2
+Tempo     : 0,020000
+
+Heurística 3
+Tempo     : 0,005000
+
+Heurística 4
+Tempo     : 0,006000
+
+Heurística 5
+Tempo     : 0,004000
+
+Movimentos: 11
+
+-------------------------------
+
+2 1 9 11 3 12 13 10 14 15 6 8 4 0 5 7
+
+Heurística 1
+Tempo     : 0,001000
+
+Heurística 2
+Tempo     : 0,005000
+
+Heurística 3
+Tempo     : 0,001000
+
+Heurística 4
+Tempo     : 0,002000
+
+Heurística 5
+Tempo     : 0,003000
+
+Movimentos: 13
+
+-------------------------------
+
+1 12 10 13 2 6 11 0 3 14 15 9 4 5 7 8
+
+Heurística 1
+Tempo     : 0,131000
+
+Heurística 2
+Tempo     : 0,169000
+
+Heurística 3
+Tempo     : 0,007000
+
+Heurística 4
+Tempo     : 0,060000
+
+Heurística 5
+Tempo     : 0,013000
+
+Movimentos: 15
+
+-------------------------------
+

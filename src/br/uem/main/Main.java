@@ -6,34 +6,78 @@ import java.util.List;
 import java.util.PriorityQueue;
 import java.util.HashMap;
 import java.util.ArrayList;
-import java.util.Scanner;
+import java.io.BufferedWriter;
+import java.io.BufferedReader;
+import java.io.FileWriter;
+import java.io.FileReader;
+import java.io.IOException;
 
-public class Main {
+class Main {
 
-  public static void main(String[] args) {
-    try {
-      //Integer[][] mapa = Constantes.MAPA_SEIS_MOVIMENTOS;
-      String mapa = Constantes.MAPA_TESTE_06;
-      //Scanner scanner = new Scanner(System.in);
-      //String mapa = scanner.next();
-
-      double tempo = System.currentTimeMillis();
-      Puzzle puzzle = new AStar().executa(mapa, new HLinhaQuatro());
-      System.out.printf("Tempo: %f\n", ((System.currentTimeMillis() - tempo) / 1000.0));
-      System.out.printf("%d movimentos!\n", (int)puzzle.getDistanciaOrigem());
-    } catch (Exception e) {
-      System.out.println(e.getMessage());
+  public static void main(String[] args) throws IOException {
+    try{
+      List<String> listaArquivos = new ArrayList<String>();
+//      listaArquivos.add("C:\\Projetos\\UEM\\MOA\\AStar\\trunk\\testes\\01.txt");
+//      listaArquivos.add("C:\\Projetos\\UEM\\MOA\\AStar\\trunk\\testes\\02.txt");
+//      listaArquivos.add("C:\\Projetos\\UEM\\MOA\\AStar\\trunk\\testes\\03.txt");
+//      listaArquivos.add("C:\\Projetos\\UEM\\MOA\\AStar\\trunk\\testes\\04.txt");
+      listaArquivos.add("C:\\Projetos\\UEM\\MOA\\AStar\\trunk\\testes\\05.txt");
+      listaArquivos.add("C:\\Projetos\\UEM\\MOA\\AStar\\trunk\\testes\\06.txt");
+      listaArquivos.add("C:\\Projetos\\UEM\\MOA\\AStar\\trunk\\testes\\07.txt");
+      listaArquivos.add("C:\\Projetos\\UEM\\MOA\\AStar\\trunk\\testes\\08.txt");
+      listaArquivos.add("C:\\Projetos\\UEM\\MOA\\AStar\\trunk\\testes\\09.txt");
+      listaArquivos.add("C:\\Projetos\\UEM\\MOA\\AStar\\trunk\\testes\\10.txt");
+      
+      List<IHeuristica> listaHeuristicas = new ArrayList<IHeuristica>();
+      listaHeuristicas.add(new HLinhaUm());
+      listaHeuristicas.add(new HLinhaDois());
+      listaHeuristicas.add(new HLinhaTres());
+      listaHeuristicas.add(new HLinhaQuatro());
+      listaHeuristicas.add(new HLinhaCinco());
+      BufferedWriter bufferedWriter;// = new BufferedWriter(new FileWriter("C:\\Projetos\\UEM\\MOA\\AStar\\trunk\\testes\\00.txt", true));
+      String mapa;
+      int movimentos = 0;
+      for (String fileName: listaArquivos){        
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(fileName))) {
+          mapa = bufferedReader.readLine();
+        }
+        
+        bufferedWriter = new BufferedWriter(new FileWriter("C:\\Projetos\\UEM\\MOA\\AStar\\trunk\\testes\\00.txt", true));
+        
+        bufferedWriter.append(mapa + "\n\r");
+        bufferedWriter.newLine();
+        for (IHeuristica heuristica: listaHeuristicas){
+          double tempo = System.currentTimeMillis();
+          Puzzle puzzle = new AStar().executa(mapa, heuristica);
+          bufferedWriter.append(heuristica.nome());
+          bufferedWriter.newLine();
+          bufferedWriter.append(String.format("Tempo     : %f\n\r", ((System.currentTimeMillis() - tempo) / 1000.0)));
+          bufferedWriter.newLine();
+          movimentos = (int)puzzle.getDistanciaOrigem();
+        }
+        
+        bufferedWriter.append(String.format("Movimentos: %d\n\r", movimentos));
+        bufferedWriter.newLine();
+        bufferedWriter.append("-------------------------------\n\r");          
+        bufferedWriter.newLine();
+        bufferedWriter.close();
+      }        
+    } catch (Exception e){      
+      BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(args[1], true));
+      bufferedWriter.append(new BufferedReader(new FileReader(args[0])).readLine() + "\n");
+      bufferedWriter.append(e.getMessage() + "\n");
+      bufferedWriter.append("-------------------------------\n");
     }
-  }
+  }  
 }
 
 class AStar {
   
-  public Puzzle executa(String mapa, IHeuristica heuristica) throws Exception {    
+  public Puzzle executa(String mapa, IHeuristica heuristica) {    
     return executa(mapa, " ", heuristica);
   }
   
-  public Puzzle executa(String mapa, String separador, IHeuristica heuristica) throws Exception {
+  public Puzzle executa(String mapa, String separador, IHeuristica heuristica) {
     String[] vetorMapa = mapa.split(separador);
     Integer[][] matrizMapa = new Integer[4][4];
     int linha = 0;
@@ -52,18 +96,7 @@ class AStar {
     return executa(matrizMapa, heuristica);
   }
   
-  public Puzzle executa(Integer[][] mapa, IHeuristica heuristica) throws Exception {
-    int tamanho = 0;
-    for (Integer[] linha : mapa) {
-      for (Integer coluna : linha) {
-        tamanho++;
-      }
-    }
-
-    if ((tamanho != 16)) {
-      throw new Exception("Argumento inválido, deve possuir 16 números");
-    }
-    
+  public Puzzle executa(Integer[][] mapa, IHeuristica heuristica) {    
     Comparator<Puzzle> comparador = new Puzzle();
     PriorityQueue<Puzzle> filaAbertos = new PriorityQueue<Puzzle>(comparador);
     PriorityQueue<Puzzle> filaFechados = new PriorityQueue<Puzzle>(comparador);
@@ -168,6 +201,7 @@ enum Direcao {
 
 interface IHeuristica {
   public double executaCalculo(Puzzle puzzle);
+  public String nome();
 }
 
 class Tuple {
@@ -217,6 +251,8 @@ class Tuple {
 class HLinhaUm implements IHeuristica {
 
   @Override
+  public String nome(){ return "Heurística 1";};
+  @Override
   public double executaCalculo(Puzzle puzzle) {
     double resultado = 0;
     Integer[][] estadoFinal = Constantes.ESTADOFINAL;
@@ -236,6 +272,9 @@ class HLinhaUm implements IHeuristica {
 
 class HLinhaDois implements IHeuristica {
 
+  @Override
+  public String nome(){ return "Heurística 2";};
+  
   @Override
   public double executaCalculo(Puzzle puzzle) {
     int resultado = 0;
@@ -267,6 +306,9 @@ class HLinhaDois implements IHeuristica {
 class HLinhaTres implements IHeuristica{
 
   @Override
+  public String nome(){ return "Heurística 3";};
+  
+  @Override
   public double executaCalculo(Puzzle puzzle) {    
     int somador = 0;
     Tuple posicaoAtual;
@@ -286,6 +328,9 @@ class HLinhaTres implements IHeuristica{
 class HLinhaQuatro implements IHeuristica{
   
   @Override
+  public String nome(){ return "Heurística 4";};
+  
+  @Override
   public double executaCalculo(Puzzle puzzle) {
     double pesoH1 = 0.05;
     double pesoH2 = 0.05;
@@ -297,6 +342,9 @@ class HLinhaQuatro implements IHeuristica{
 
 class HLinhaCinco implements IHeuristica{
 
+  @Override
+  public String nome(){ return "Heurística 5";};
+  
   @Override
   public double executaCalculo(Puzzle puzzle) {
     return Double.max(Double.max(new HLinhaUm().executaCalculo(puzzle), new HLinhaDois().executaCalculo(puzzle)), new HLinhaTres().executaCalculo(puzzle));
